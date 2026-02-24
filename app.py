@@ -13,3 +13,5 @@ def create_app():
     def page(page_name):
         return render_template(f'{page_name}.html')   
     return app
+
+app = create_app()
