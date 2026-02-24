@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+  /* Timeline connecting line */
+  .timeline-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(
+      to bottom,
+      rgba(219, 234, 254, 0),
+      rgba(96, 165, 250, 0.5),
+      rgba(219, 234, 254, 0)
+    );
+    transform: translateX(-50%);
+  }
+
+  /* Timeline item animation */
+  .timeline-item {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: slideInUp 0.8s ease-out forwards;
+  }
+
+  .timeline-item.left {
+    animation-delay: 0s;
+  }
+
+  .timeline-item.right {
+    animation-delay: 0.2s;
+  }
+
+  /* Year banner styling */
+  .year-banner {
+    position: relative;
+    text-align: center;
+    margin: 24px 0;
+    opacity: 0;
+    animation: slideInUp 0.8s ease-out forwards;
+  }
+
+  .year-banner h2 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: #1f2937;
+    letter-spacing: 0.1em;
+    position: relative;
+    display: inline-block;
+    padding: 0 24px;
+  }
+
+  .year-banner::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      rgba(96, 165, 250, 0),
+      rgba(96, 165, 250, 0.3),
+      rgba(96, 165, 250, 0)
+    );
+    z-index: 0;
+  }
+
+  .year-banner h2 {
+    z-index: 1;
+    background: rgb(243, 244, 246);
+    position: relative;
+  }
+
+  @keyframes slideInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Mobile responsive - single column */
+  @media (max-width: 768px) {
+    .timeline-line {
+      left: 16px;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      width: 100% !important;
+    }
+
+    .timeline-item.left,
+    .timeline-item.right {
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .timeline-item > div {
+      width: 100% !important;
+      padding-left: 60px !important;
+      padding-right: 0 !important;
+      margin: 0 !important;
+    }
+  }
+</style>
+
+<div class="py-12">
+  <h1 class="text-4xl font-bold text-center mb-16 text-gray-800">Historische Entwicklung</h1>
+
+  <div class="relative max-w-4xl mx-auto px-4">
+    <!-- Timeline vertical line -->
+    <div class="timeline-line"></div>
+
+    <!-- Timeline items -->
+    <div class="space-y-12">
+      <!-- 2018-2019 Year Banner -->
+      <div class="year-banner">
+        <h2>Pre 2024</h2>
+      </div>
+
+      <!-- Item 1 - Left -->
+      <div class="timeline-item left md:flex md:justify-start">
+        <div class="w-full md:w-1/2 md:pr-12">
+          <div class="relative bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+            <div class="h-48 bg-gradient-to-br from-blue-400 to-blue-500 flex items-center justify-center">
+              <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=300&fit=crop" alt="USA-China" class="w-full h-full object-cover">
+            </div>
+            <div class="p-6">
+              <h3 class="text-sm font-semibold text-blue-500 mb-2">1729</h3>
+              <p class="text-gray-700 text-sm leading-relaxed">
+                Erste Zölle in der Geschichte, die von der britischen Regierung auf importierte Waren aus den amerikanischen Kolonien erhoben wurden. Ziel war es, Einnahmen zu generieren und die britische Wirtschaft zu schützen.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 2 - Right -->
+      <div class="timeline-item right md:flex md:justify-end">
+        <div class="w-full md:w-1/2 md:pl-12">
+          <div class="relative bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+            <div class="h-48 bg-gradient-to-br from-blue-400 to-blue-500 flex items-center justify-center">
+              <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=300&fit=crop" alt="2019-2020" class="w-full h-full object-cover">
+            </div>
+            <div class="p-6">
+              <h3 class="text-sm font-semibold text-blue-500 mb-2">1773</h3>
+              <p class="text-gray-700 text-sm leading-relaxed">
+                Boston Tea Party: Amerikanische Kolonisten protestieren gegen die britischen Teezölle, indem sie Teeladungen in den Hafen von Boston werfen. Dieses Ereignis trug zur Eskalation der Spannungen zwischen den Kolonien und Großbritannien bei und führte letztendlich zum Unabhängigkeitskrieg.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+<script>
+  // Scroll animation - trigger when timeline items come into view
+  const observerOptions = {
+    threshold: 0.2,
+    rootMargin: '0px 0px -100px 0px'
+  };
+
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.animationPlayState = 'running';
+      }
+    });
+  }, observerOptions);
+
+  // Observe all timeline items
+  document.querySelectorAll('.timeline-item').forEach(item => {
+    item.style.animationPlayState = 'paused';
+    observer.observe(item);
+  });
+</script>
+
+{% endblock %}
