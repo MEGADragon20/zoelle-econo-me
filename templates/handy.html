@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-12 px-6">
+
+    <!-- Top Labels -->
+    <div class="flex justify-between mb-6 text-lg font-semibold text-gray-700">
+        <span>Protektivismus</span>
+        <span>Ein Markt</span>
+    </div>
+
+    <!-- Slider -->
+    <div class="mb-10">
+        <input 
+            id="policySlider"
+            type="range"
+            min="1"
+            max="5"
+            step="1"
+            value="3"
+            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+        >
+        <div class="flex justify-between text-sm text-gray-500 mt-2">
+            <span>*</span>
+            <span>*</span>
+            <span>*</span>
+            <span>*</span>
+            <span>*</span>
+        </div>
+    </div>
+
+    <!-- Dynamic Content -->
+    <div id="contentBox" class="bg-white shadow-lg rounded-2xl p-6 transition-all duration-300 md:grid md:grid-cols-2 gap-6">
+        <img id="contentImage" src="" alt="" class="w-full h-64 object-cover rounded-xl mb-6 col-span-2">
+        <div class="block">
+            <h2 id="contentTitle" class="text-2xl font-bold mb-4"></h2>
+            <p id="contentText" class="text-gray-600 text-lg"></p>
+        </div>
+        <div id="my-chart" class="bg-gray-100 shadow-lg rounded-2xl p-6 transition-all duration-300 block">
+
+            <table class="charts-css column show-labels show-primary-axis data-spacing-20">
+                <tr>
+                    <th scope="row">Sicherheit</th>
+                    <td id="security" style="--size: 0.4"><span class="data"></span></td>
+                </tr>
+                <tr>
+                    <th scope="row">Wohlstand</th>
+                    <td id="prosperity" style="--size: 0.6"><span class="data"></span></td>
+                </tr>
+            </table>
+        </div>
+        <div class="md:grid md:grid-cols-3 gap-3 bg-gray-100 shadow-lg rounded-2xl p-6 transition-all duration-300 block col-span-2">
+            <div class="bg-green-100 shadow-lg rounded-2xl col-span-1 block p-3">
+                <h3 class="text-sm text-gray-500">Beruf: <span class="text-lg font-semibold">Bauer</span></h3>
+            </div>
+            <div class="bg-yellow-100 shadow-lg rounded-2xl col-span-1 block p-3">
+                <h3 class="text-sm text-gray-500">Beruf: <span class=" text-lg font-semibold">Unternehmer</span></h3>
+            </div>
+            <div class="bg-blue-100 shadow-lg rounded-2xl col-span-1 block p-3">
+                <h3 class="text-sm text-gray-500">Beruf: <span class="text-lg font-semibold">Arbeitsloser</span></h3>
+            </div>
+        </div>
+
+</div>
+
+<script>
+    const slider = document.getElementById('policySlider');
+    const image = document.getElementById('contentImage');
+    const title = document.getElementById('contentTitle');
+    const text = document.getElementById('contentText');
+    const security = document.getElementById('security');
+    const prosperity = document.getElementById('prosperity');
+
+    const contentData = {
+        1: {
+            img: "/static/images/protectivism-strong.jpg",
+            title: "Starrker Protektivismus",
+            text: "High tariffs, strict trade barriers, and strong domestic industry protection.",
+            security: 0.9,
+            prosperity: 0.1
+        },
+        2: {
+            img: "/static/images/protectivism-moderate.jpg",
+            title: "Moderater Protektivismus",
+            text: "Selective tariffs and targeted support for strategic industries.",
+            security: 0.7,
+            prosperity: 0.3 
+        },
+        3: {
+            img: "/static/images/balanced.jpg",
+            title: "Ausgewogene Herangehensweise",
+            text: "Careful trade agreements combined with safeguards for local markets.",
+            security: 0.5,
+            prosperity: 0.5
+        },
+        4: {
+            img: "/static/images/market-leaning.jpg",
+            title: "Marktorientiert",
+            text: "Lower trade barriers and broader international cooperation.",
+            security: 0.3,
+            prosperity: 0.7
+        },
+        5: {
+            img: "/static/images/one-market.jpg",
+            title: "Ein Markt",
+            text: "Full economic integration with minimal restrictions on trade.",
+            security: 0.1,
+            prosperity: 0.9
+        }
+    };
+
+    function updateContent(value) {
+        image.src = contentData[value].img;
+        image.alt = contentData[value].title;
+        title.textContent = contentData[value].title;
+        text.textContent = contentData[value].text;
+        security.style.setProperty('--size', contentData[value].security);
+        prosperity.style.setProperty('--size', contentData[value].prosperity);
+    }
+
+    slider.addEventListener('input', (e) => {
+        updateContent(e.target.value);
+    });
+
+    // Initialize on load
+    updateContent(slider.value);
+</script>
+
+{% endblock %}

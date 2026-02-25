@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 
 
 def create_app():
@@ -12,6 +12,11 @@ def create_app():
     @app.route('/page/<page_name>')
     def page(page_name):
         return render_template(f'{page_name}.html')   
+
+    @app.route('/images/<path:image_name>')
+    def images(image_name):
+        return send_from_directory('static/images', image_name)
+
     return app
 
 app = create_app()
