@@ -5,8 +5,8 @@
 
     <!-- Top Labels -->
     <div class="flex justify-between mb-6 text-lg font-semibold text-gray-700">
-        <span>Protektivismus</span>
-        <span>Ein Markt</span>
+        <span>Protektionismus</span>
+        <span>Hyperglobalisierung</span>
     </div>
 
     <!-- Slider -->
@@ -49,15 +49,28 @@
                 </tr>
             </table>
         </div>
+        <!-- Berufsspezifische Auswirkungen -->
         <div class="md:grid md:grid-cols-3 gap-3 bg-gray-100 shadow-lg rounded-2xl p-6 transition-all duration-300 block col-span-2">
             <div class="bg-green-100 shadow-lg rounded-2xl col-span-1 block p-3">
-                <h3 class="text-sm text-gray-500">Beruf: <span class="text-lg font-semibold">Bauer</span></h3>
+                <h3 class="text-green-700 text-lg font-semibold">Landwirt</h3>
+                <br>
+                <img class="w-25 rounded-full" src="{{ url_for('images', image_name='farmer.png') }}" alt="Landwirt" class="w-full h-20 object-cover rounded-md mb-2">
+                <br>
+                <p class="text-sm text-center text-gray-700" id="farmer-text"></p>
             </div>
             <div class="bg-yellow-100 shadow-lg rounded-2xl col-span-1 block p-3">
-                <h3 class="text-sm text-gray-500">Beruf: <span class=" text-lg font-semibold">Unternehmer</span></h3>
+                <h3 class="text-yellow-700 text-lg font-semibold">IT-Administrator</h3>
+                <br>
+                <img class="w-25 rounded-full" src="{{ url_for('images', image_name='it_admin.png') }}" alt="IT-Administrator" class="w-full h-20 object-cover rounded-md mb-2">
+                <br>
+                <p class="text-sm text-center text-gray-700" id="it-admin-text"></p>
             </div>
             <div class="bg-blue-100 shadow-lg rounded-2xl col-span-1 block p-3">
-                <h3 class="text-sm text-gray-500">Beruf: <span class="text-lg font-semibold">Arbeitsloser</span></h3>
+                <h3 class=" text-blue-700 text-lg font-semibold">Apothekerin</h3>
+                <br>
+                <img class="w-25 rounded-full" src="{{ url_for('images', image_name='apotekerin.png') }}" alt="Apothekerin" class="w-full h-20 object-cover rounded-md mb-2">
+                <br>
+                <p class="text-sm text-center text-gray-700" id="pharmacist-text"></p>
             </div>
         </div>
 
@@ -70,42 +83,65 @@
     const text = document.getElementById('contentText');
     const security = document.getElementById('security');
     const prosperity = document.getElementById('prosperity');
+    const farmerText = document.getElementById('farmer-text');
+    const itAdminText = document.getElementById('it-admin-text');
+    const pharmacistText = document.getElementById('pharmacist-text');
 
     const contentData = {
         1: {
-            img: "/static/images/protectivism-strong.jpg",
-            title: "Starrker Protektivismus",
+            img: "https://www.baseljetzt.ch/2024/11/Protektionismus-rte_p293736_6-4_1024w.jpg",
+            title: "Autakie",
             text: "High tariffs, strict trade barriers, and strong domestic industry protection.",
+            fact: "Laut bpb-Daten importiert Deutschland Elektronik für 142,5 Mrd. €. Ohne diese Importe gäbe es in Deutschland kein einziges neues Smartphone oder Notebook mehr, da wir 0% der High-End-Mikrochips selbst herstellen.",
             security: 0.9,
-            prosperity: 0.1
+            prosperity: 0.1,
+            l: '„Meine Ernte ist sicher, aber die Preise sind hoch.“',
+            i: '„Völliger Stillstand. Ich kriege keine Chips, keine Hardware, nichts. Wir hängen technologisch in den 90ern fest.“',
+            a: '„Wir sind sicher! Keine Erpressung durch China mehr. Jede Pille wird hier produziert – Versorgung garantiert.“'
         },
         2: {
-            img: "/static/images/protectivism-moderate.jpg",
-            title: "Moderater Protektivismus",
+            img: "https://www.freiheit.org/sites/default/files/styles/uv_full_content_large_16_9_webp/public/2025-03/507379016.jpg.webp?itok=Y5jNSPxo",
+            title: "Moderater Protektionismus",
             text: "Selective tariffs and targeted support for strategic industries.",
+            fact: "Deutschland exportiert Autos für 268,2 Mrd. € (17,2 % des Gesamtexports). Bei harten Zöllen bricht dieser Sektor ein. Das bedeutet: Jeder sechste Industriearbeitsplatz in Deutschland wäre sofort bedroht.",
             security: 0.7,
-            prosperity: 0.3 
+            prosperity: 0.3,
+            l: "„Gute Zölle schützen meine Ernte. Wer regionale Qualität will, greift jetzt eben zu meinem Gemüse.“",
+            i: "„Alles dauert ewig und kostet das Dreifache. Wie sollen wir so gegen das Silicon Valley bestehen?“",
+            a: "„Wichtige Wirkstoffe kommen wieder aus Europa. Die Regale sind voll, wir sind nicht mehr erpressbar.“"
         },
         3: {
-            img: "/static/images/balanced.jpg",
+            img: "https://www.libinst.ch/wp-content/uploads/2023/05/freihandel-protektionismus-kreuzung-pfeile-1024x603.jpg",
             title: "Ausgewogene Herangehensweise",
             text: "Careful trade agreements combined with safeguards for local markets.",
+            fact: "Selbst bei diesem „Mittelweg“ kostet die Unabhängigkeit: Die Rückverlagerung der Produktion nur der wichtigsten Medikamente würde das deutsche Gesundheitssystem laut IW Köln jährlich ca. 1,5 bis 2 Mrd. € extra kosten.",
             security: 0.5,
-            prosperity: 0.5
+            prosperity: 0.5,
+            l: "„Ein Kompromiss. Ich behalte meine Nische, solange die Importe aus Übersee nicht zu billig werden.“",
+            i: "„Okay, wir bauen langsam eigene Kapazitäten in Europa auf. Mühsam, aber wir bleiben technologisch im Spiel.“",
+            a: "„Eine solide Mischung. Wir haben Vorräte hier, nutzen aber für Standardmittel den Weltmarkt.“"
         },
         4: {
-            img: "/static/images/market-leaning.jpg",
+            img: "https://www.misesde.org/wp-content/uploads/2016/03/Welthandel.jpg",
             title: "Marktorientiert",
             text: "Lower trade barriers and broader international cooperation.",
+            fact: "Deutschland ist extrem abhängig von Energieimporten. Wir importieren über 60 % unserer Energie (Öl, Gas, Kohle). Ein politischer Konflikt reicht, und trotz billiger Waren stehen bei uns die Fabriken still.",
             security: 0.3,
-            prosperity: 0.7
+            prosperity: 0.7,
+            l: "„Es wird eng. Überall ausländische Ware im Supermarkt. Ich muss schuften wie blöd, um preislich mitzuhalten.“",
+            i: "„Läuft! Ich kriege die beste Hardware weltweit zum Top-Preis. Unsere Firmenkunden kaufen weltweit bei uns ein.“",
+            a: "„Super Preise für meine Kunden! So bleibt Medizin für jeden im Land bezahlbar.“"
         },
         5: {
-            img: "/static/images/one-market.jpg",
-            title: "Ein Markt",
+            img: "https://www.butz.de/wp-content/uploads/2024/08/ueberblick-globaler-handel-dp-552420844.jpg",
+            title: "Hyperglobalisierung",
             text: "Full economic integration with minimal restrictions on trade.",
+            fact: "Die Abhängigkeit ist total. Wenn nur ein einziger großer Hafen in Shanghai wegen eines Streiks schließt, fehlen in deutschen Apotheken innerhalb von 72 Stunden über 50 % der gängigen Antibiotika.",
             security: 0.1,
-            prosperity: 0.9
+            prosperity: 0.9,
+            l: "„Ein Desaster! Ich kann den Hof dichtmachen. Gegen industrielle Massenware aus Übersee habe ich keine Chance.“",
+            i: "„Ein Traum! Alles ist vernetzt, maximal schnell und spottbillig. Das ist die digitale Freiheit!“",
+            a: "„Effizienz pur! Wir kaufen dort, wo es am billigsten ist. Medizin ist ein günstiges Massengut für jeden.“"
         }
     };
 
@@ -116,6 +152,9 @@
         text.textContent = contentData[value].text;
         security.style.setProperty('--size', contentData[value].security);
         prosperity.style.setProperty('--size', contentData[value].prosperity);
+        farmerText.textContent = contentData[value].l;
+        itAdminText.textContent = contentData[value].i;
+        pharmacistText.textContent = contentData[value].a;
     }
 
     slider.addEventListener('input', (e) => {

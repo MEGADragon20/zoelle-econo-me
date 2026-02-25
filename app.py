@@ -15,8 +15,11 @@ def create_app():
 
     @app.route('/images/<path:image_name>')
     def images(image_name):
-        return send_from_directory('static/images', image_name)
+        return send_from_directory('public/images', image_name)
 
+    @app.route('/sources')
+    def sources():
+        return render_template('sources.html')
     return app
 
 app = create_app()
