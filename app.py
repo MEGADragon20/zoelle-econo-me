@@ -19,7 +19,11 @@ def create_app():
 
     @app.route('/sources')
     def sources():
-        return render_template('sources.html')
+        sources = []
+        with open('sources.txt', 'r') as f:
+            for line in f:
+                sources.append(line.strip())
+        return render_template('sources.html', sources=sources)
     return app
 
 app = create_app()
