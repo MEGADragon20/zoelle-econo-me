@@ -76,6 +76,32 @@
 
 </div>
 
+<!-- Fact Popup -->
+<div id="factPopup" class="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+    <div id="factPopupInner"
+        class="pointer-events-auto max-w-lg w-full bg-white border border-amber-200 shadow-2xl rounded-2xl p-6 
+               transform transition-all duration-300 scale-95 opacity-0">
+        <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 bg-amber-100 text-amber-600 rounded-full p-2">
+                <!-- Lightbulb icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m1.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.346.346A3.737 3.737 0 0115 16.538V17a1 1 0 01-1 1h-4a1 1 0 01-1-1v-.462a3.737 3.737 0 01-1.1-2.591l-.345-.345z"/>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <h3 class="text-sm font-semibold text-amber-700 uppercase tracking-wide mb-1">Wussten Sie schon?</h3>
+                <p id="factPopupText" class="text-gray-700 text-sm leading-relaxed"></p>
+            </div>
+            <button id="factPopupClose"
+                class="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors duration-150 ml-2 mt-0.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
     const slider = document.getElementById('policySlider');
     const image = document.getElementById('contentImage');
@@ -87,17 +113,25 @@
     const itAdminText = document.getElementById('it-admin-text');
     const pharmacistText = document.getElementById('pharmacist-text');
 
+    // Popup elements
+    const factPopup = document.getElementById('factPopup');
+    const factPopupInner = document.getElementById('factPopupInner');
+    const factPopupText = document.getElementById('factPopupText');
+    const factPopupClose = document.getElementById('factPopupClose');
+
+    let popupTimeout = null;
+
     const contentData = {
         1: {
             img: "https://www.baseljetzt.ch/2024/11/Protektionismus-rte_p293736_6-4_1024w.jpg",
-            title: "Autakie",
+            title: "Autarkie",
             text: "High tariffs, strict trade barriers, and strong domestic industry protection.",
             fact: "Laut bpb-Daten importiert Deutschland Elektronik für 142,5 Mrd. €. Ohne diese Importe gäbe es in Deutschland kein einziges neues Smartphone oder Notebook mehr, da wir 0% der High-End-Mikrochips selbst herstellen.",
             security: 0.9,
             prosperity: 0.1,
-            l: '„Meine Ernte ist sicher, aber die Preise sind hoch.“',
-            i: '„Völliger Stillstand. Ich kriege keine Chips, keine Hardware, nichts. Wir hängen technologisch in den 90ern fest.“',
-            a: '„Wir sind sicher! Keine Erpressung durch China mehr. Jede Pille wird hier produziert – Versorgung garantiert.“'
+            l: '„Meine Ernte ist sicher, aber die Preise sind hoch."',
+            i: '„Völliger Stillstand. Ich kriege keine Chips, keine Hardware, nichts. Wir hängen technologisch in den 90ern fest."',
+            a: '„Wir sind sicher! Keine Erpressung durch China mehr. Jede Pille wird hier produziert – Versorgung garantiert."'
         },
         2: {
             img: "https://www.freiheit.org/sites/default/files/styles/uv_full_content_large_16_9_webp/public/2025-03/507379016.jpg.webp?itok=Y5jNSPxo",
@@ -114,7 +148,7 @@
             img: "https://www.libinst.ch/wp-content/uploads/2023/05/freihandel-protektionismus-kreuzung-pfeile-1024x603.jpg",
             title: "Ausgewogene Herangehensweise",
             text: "Careful trade agreements combined with safeguards for local markets.",
-            fact: "Selbst bei diesem „Mittelweg“ kostet die Unabhängigkeit: Die Rückverlagerung der Produktion nur der wichtigsten Medikamente würde das deutsche Gesundheitssystem laut IW Köln jährlich ca. 1,5 bis 2 Mrd. € extra kosten.",
+            fact: 'Selbst bei diesem „Mittelweg" kostet die Unabhängigkeit: Die Rückverlagerung der Produktion nur der wichtigsten Medikamente würde das deutsche Gesundheitssystem laut IW Köln jährlich ca. 1,5 bis 2 Mrd. € extra kosten.',
             security: 0.5,
             prosperity: 0.5,
             l: "„Ein Kompromiss. Ich behalte meine Nische, solange die Importe aus Übersee nicht zu billig werden.“",
@@ -145,7 +179,37 @@
         }
     };
 
-    function updateContent(value) {
+    function showFactPopup(fact) {
+        // Clear any pending auto-close
+        if (popupTimeout) clearTimeout(popupTimeout);
+
+        factPopupText.textContent = fact;
+
+        // Trigger show animation
+        factPopupInner.classList.remove('scale-95', 'opacity-0');
+        factPopupInner.classList.add('scale-100', 'opacity-100');
+
+        // Auto-dismiss after 6 seconds
+        popupTimeout = setTimeout(hideFactPopup, 6000);
+    }
+
+    function hideFactPopup() {
+        factPopupInner.classList.remove('scale-100', 'opacity-100');
+        factPopupInner.classList.add('scale-95', 'opacity-0');
+        if (popupTimeout) {
+            clearTimeout(popupTimeout);
+            popupTimeout = null;
+        }
+    }
+
+    factPopupClose.addEventListener('click', hideFactPopup);
+
+    // Close on backdrop click
+    factPopup.addEventListener('click', (e) => {
+        if (e.target === factPopup) hideFactPopup();
+    });
+
+    function updateContent(value, showPopup = false) {
         image.src = contentData[value].img;
         image.alt = contentData[value].title;
         title.textContent = contentData[value].title;
@@ -155,14 +219,18 @@
         farmerText.textContent = contentData[value].l;
         itAdminText.textContent = contentData[value].i;
         pharmacistText.textContent = contentData[value].a;
+
+        if (showPopup) {
+            showFactPopup(contentData[value].fact);
+        }
     }
 
     slider.addEventListener('input', (e) => {
-        updateContent(e.target.value);
+        updateContent(e.target.value, true);
     });
 
-    // Initialize on load
-    updateContent(slider.value);
+    // Initialize on load (no popup on first load)
+    updateContent(slider.value, false);
 </script>
 
 {% endblock %}

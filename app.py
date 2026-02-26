@@ -24,6 +24,29 @@ def create_app():
             for line in f:
                 sources.append(line.strip())
         return render_template('sources.html', sources=sources)
+    
+    @app.route("/wahlomat", methods=["POST"])
+    def wahlomat():
+        A1 = request.form.get("1")
+        A2 = request.form.get("2")
+        A3 = request.form.get("3")
+        A4 = request.form.get("4")
+        A5 = request.form.get("5")
+        result = sum([int(A1), int(A2), int(A3), int(A4), int(A5)])
+        if result > 1:
+            answer = "Marktorientiert"
+        
+        elif result < -1:
+            answer = "Moderat Protektionistisch"
+        if result > 3:
+            answer = "Hyperglobalisierung"
+        elif result < -3:
+            answer = "Autarkie"
+        else:
+            answer = "Ausgewogene Herangehensweise"
+        result += 5
+        result *= 0.1
+        return render_template('zollomat_ergebnis.html', answer=answer, result=result)
     return app
 
 app = create_app()

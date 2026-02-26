@@ -1,0 +1,389 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  * { box-sizing: border-box; }
+  .serif { font-family: 'DM Serif Display', serif; }
+
+  /* Progress bar */
+  #progress-fill {
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Slide animation */
+  .slide-enter-left  { animation: enterLeft  0.4s cubic-bezier(0.4,0,0.2,1) forwards; }
+  .slide-enter-right { animation: enterRight 0.4s cubic-bezier(0.4,0,0.2,1) forwards; }
+  .slide-exit-left   { animation: exitLeft   0.35s cubic-bezier(0.4,0,0.2,1) forwards; }
+  .slide-exit-right  { animation: exitRight  0.35s cubic-bezier(0.4,0,0.2,1) forwards; }
+
+  @keyframes enterLeft  { from { opacity:0; transform: translateX(-60px); } to { opacity:1; transform: translateX(0); } }
+  @keyframes enterRight { from { opacity:0; transform: translateX(60px);  } to { opacity:1; transform: translateX(0); } }
+  @keyframes exitLeft   { from { opacity:1; transform: translateX(0);     } to { opacity:0; transform: translateX(-60px); } }
+  @keyframes exitRight  { from { opacity:1; transform: translateX(0);     } to { opacity:0; transform: translateX(60px);  } }
+
+  /* Option buttons */
+  .option-btn {
+    position: relative;
+    cursor: pointer;
+    border: 1.5px solid #2e2e2e;
+    background: #181818;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    text-align: left;
+    width: 100%;
+    color: #c8c4be;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .option-btn:hover {
+    border-color: #555;
+    background: #202020;
+    transform: translateX(3px);
+  }
+  .option-btn.selected {
+    border-color: #e8b84b;
+    background: #1e1a0f;
+    color: #f0ede8;
+  }
+  .option-btn.selected::after {
+    content: "✓";
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #e8b84b;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  /* Keyboard hint */
+  kbd {
+    display: inline-block;
+    background: #222;
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 2px 7px;
+    font-size: 0.7rem;
+    font-family: 'DM Sans', sans-serif;
+    color: #aaa;
+  }
+
+  /* Submit button */
+  #submit-btn {
+    background: linear-gradient(135deg, #e8b84b, #d4943a);
+    color: #0f0f0f;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border-radius: 10px;
+    padding: 0.85rem 2.5rem;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+  #submit-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+  #submit-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+  /* Nav buttons */
+  .nav-btn {
+    background: #1e1e1e;
+    border: 1.5px solid #333;
+    color: #888;
+    border-radius: 9px;
+    padding: 0.6rem 1.2rem;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  .nav-btn:hover:not(:disabled) { border-color: #666; color: #ccc; background: #252525; }
+  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* Dot indicators */
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #333;
+    transition: background 0.3s, transform 0.3s;
+  }
+  .dot.active { background: #e8b84b; transform: scale(1.3); }
+  .dot.answered { background: #7a6020; }
+  .bg-paper {
+    background-color: #faf7f2;
+  }
+
+  /* Grain overlay */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 999; opacity: 0.45;
+  }
+</style>
+
+<div class="min-h-screen flex flex-col items-center justify-center px-4 py-10 relative bg-paper">
+
+  <!-- Header -->
+  <div class="w-full max-w-xl mb-8 text-center">
+    <p class="text-xs uppercase tracking-widest text-yellow-500/70 mb-2 font-medium">Interaktiver Test</p>
+    <h1 class="serif text-4xl md:text-5xl font-black leading-tight">
+      Zoll‑O‑Mat
+    </h1>
+    <p class="text-stone-700 text-sm mt-2 max-w-sm mx-auto">
+      5 Fragen — herausfinden, wo Sie auf dem Spektrum zwischen <em>Protektionismus</em> und <em>Hyperglobalisierung</em> stehen. Antworten Sie ehrlich und erfahren Sie am Ende, welche wirtschaftspolitischen Maßnahmen am besten zu Ihren Präferenzen passen. Viel Spaß beim Ausprobieren!
+    </p>
+  </div>
+
+  <!-- Progress -->
+  <div class="w-full max-w-xl mb-6">
+    <div class="flex justify-between text-xs text-stone-500 mb-2">
+      <span id="progress-label">Frage 1 von 8</span>
+      <span id="progress-pct">0 %</span>
+    </div>
+    <div class="h-1 bg-stone-800 rounded-full overflow-hidden">
+      <div id="progress-fill" class="h-full bg-yellow-500 rounded-full" style="width: 0%"></div>
+    </div>
+  </div>
+
+  <!-- Card area -->
+  <div class="w-full max-w-xl relative" style="min-height: 340px;">
+    <div id="question-card" class="bg-[#141414] border border-stone-800 rounded-2xl p-6 md:p-8 shadow-2xl">
+      <p id="q-number" class="serif italic text-yellow-500/60 text-sm mb-3"></p>
+      <h2 id="q-text" class="serif text-2xl md:text-3xl text-white leading-snug mb-7"></h2>
+      <div id="options-container" class="space-y-3"></div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="w-full max-w-xl mt-6 flex items-center justify-between">
+    <button id="prev-btn" class="nav-btn" onclick="navigate(-1)" disabled>
+      ← Zurück
+    </button>
+
+    <!-- Dot indicators -->
+    <div id="dot-bar" class="flex items-center gap-1.5"></div>
+
+    <button id="next-btn" class="nav-btn" onclick="navigate(1)">
+      Weiter →
+    </button>
+  </div>
+
+  <!-- Submit (only on last question) -->
+  <div id="submit-area" class="mt-8 hidden flex-col items-center gap-3">
+    <p class="text-stone-500 text-sm text-center">Sie haben alle Fragen beantwortet. Ergebnis anzeigen?</p>
+    <button id="submit-btn" onclick="submitForm()" disabled>
+      Auswertung starten →
+    </button>
+  </div>
+
+  <!-- Keyboard hint -->
+  <p class="mt-8 text-stone-600 text-xs text-center">
+    <kbd>←</kbd> <kbd>→</kbd> zum Navigieren &nbsp;·&nbsp; <kbd>1</kbd>–<kbd>4</kbd> zum Auswählen
+  </p>
+</div>
+
+<!-- Hidden form for POST -->
+<form id="hidden-form" action="/wahlomat" method="POST" style="display:none"></form>
+
+<script>
+const questions = [
+  {
+    id: 1,
+    text: "Ein wichtiges Haushaltsgerät (z. B. die Waschmaschine) geht kaputt. Was ist ihr erster Impuls?",
+    options: [
+      { label: "Ich schaue online nach dem günstigsten neuen Modell mit den besten Features, egal welche Marke.",       value: -1 },
+      { label: "Ich kaufe ein neues Gerät von einem bekannten Hersteller, auch wenn es etwas teurer ist.",       value: 0 },
+      { label: "Ich rufe einen Handwerker aus der Region an, auch wenn die Reparatur fast so viel kostet wie ein Neugerät.",  value: 1 },
+    ]
+  },
+  {
+    id: 2,
+    text: "Stellen Sie sich vor, Sie planen ein großes Abendessen für Freunde. Wie kaufen Sie ein?",
+    options: [
+      { label: "Ich habe ein festes Rezept im Kopf und brauche genau diese Zutaten – egal, ob die Erdbeeren gerade aus Peru kommen müssen.",       value: -1 },
+      { label: "Ich passe meine Zutatenwahl an die Verfügbarkeit und den Preis an, auch wenn das bedeutet, dass ich manchmal auf ein Rezept verzichte.",       value: 0 },
+      { label: "Ich gehe auf den Wochenmarkt und kaufe nur saisonale, regionale Produkte – auch wenn das bedeutet, dass es keine Erdbeeren gibt.",  value: 1 }
+    ]
+  },
+  {
+    id: 3,
+    text: "Wie wichtig ist Ihnen die Herkunft der Kleidung, die Sie tragen?",
+    options: [
+      { label: "Wenn Design und Preis stimmen, ist mir die Herkunft zweitrangig.",       value: -1 },
+      { label: "Billigware aus Bangladesh ist nichts für mich, aber echte Prada Kleidung made in China ist okay.",       value: 0 },
+      { label: "Ich möchte genau wissen, wer es unter welchen Bedingungen genäht hat, auch wenn ich dafür viel länger sparen muss. ", value: 1 }
+    ]
+  },
+  {
+    id: 4,
+    text: "Wie stehen Sie zu technischem Fortschritt?",
+    options: [
+      { label: "Ich will immer das neueste Update und die schnellste Hardware, sobald sie weltweit erscheint.",       value: -1 },
+      { label: "Ich nutze meine Geräte, bis sie auseinanderfallen. Beständigkeit ist mir wichtiger als das neueste Feature. ",       value: 1 }
+    ]
+  },
+  {
+    id: 5,
+    text: "Wenn Sie an die Zukunft denken, was bereitet Ihnen mehr Sorgen?",
+    options: [
+      { label: "Dass wir den Anschluss an die Welt verlieren und technologisch abgehängt werden.",       value: -1 },
+      { label: "Dass wir verlernen, wie man Dinge selbst herstellt, und von anderen abhängig sind.",       value: 1 },
+    ]
+  },
+];
+
+let current = 0;
+const answers = new Array(questions.length).fill(null);
+let animating = false;
+
+const card = document.getElementById('question-card');
+const qNumber = document.getElementById('q-number');
+const qText = document.getElementById('q-text');
+const optionsContainer = document.getElementById('options-container');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+const submitArea = document.getElementById('submit-area');
+const submitBtn = document.getElementById('submit-btn');
+const progressFill = document.getElementById('progress-fill');
+const progressLabel = document.getElementById('progress-label');
+const progressPct = document.getElementById('progress-pct');
+const dotBar = document.getElementById('dot-bar');
+
+function buildDots() {
+  dotBar.innerHTML = '';
+  questions.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot';
+    if (i === current) d.classList.add('active');
+    else if (answers[i] !== null) d.classList.add('answered');
+    dotBar.appendChild(d);
+  });
+}
+
+function renderQuestion(dir) {
+  const q = questions[current];
+
+  qNumber.textContent = `Frage ${current + 1} / ${questions.length}`;
+  qText.textContent = q.text;
+
+  optionsContainer.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    if (answers[current] === opt.value) btn.classList.add('selected');
+    btn.textContent = opt.label;
+    btn.addEventListener('click', () => selectOption(opt.value, btn));
+    optionsContainer.appendChild(btn);
+  });
+
+  // Progress
+  const answered = answers.filter(a => a !== null).length;
+  const pct = Math.round((answered / questions.length) * 100);
+  progressFill.style.width = pct + '%';
+  progressLabel.textContent = `Frage ${current + 1} von ${questions.length}`;
+  progressPct.textContent = pct + ' %';
+
+  // Nav buttons
+  prevBtn.disabled = current === 0;
+  nextBtn.disabled = current === questions.length - 1;
+
+  // Show/hide submit
+  if (current === questions.length - 1) {
+    submitArea.classList.remove('hidden');
+    submitArea.classList.add('flex');
+  } else {
+    submitArea.classList.add('hidden');
+    submitArea.classList.remove('flex');
+  }
+  updateSubmitBtn();
+
+  // Dots
+  buildDots();
+
+  // Animation
+  if (dir !== 0) {
+    const enterClass = dir > 0 ? 'slide-enter-right' : 'slide-enter-left';
+    card.classList.remove('slide-enter-left','slide-enter-right','slide-exit-left','slide-exit-right');
+    card.classList.add(enterClass);
+    card.addEventListener('animationend', () => {
+      card.classList.remove(enterClass);
+      animating = false;
+    }, { once: true });
+  }
+}
+
+function selectOption(value, btn) {
+  answers[current] = value;
+  document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  updateSubmitBtn();
+
+  // Update progress + dots
+  const answered = answers.filter(a => a !== null).length;
+  const pct = Math.round((answered / questions.length) * 100);
+  progressFill.style.width = pct + '%';
+  progressPct.textContent = pct + ' %';
+  buildDots();
+
+  // Auto-advance after short delay (unless last question)
+  if (current < questions.length - 1) {
+    setTimeout(() => navigate(1), 350);
+  }
+}
+
+function updateSubmitBtn() {
+  const allAnswered = answers.every(a => a !== null);
+  submitBtn.disabled = !allAnswered;
+}
+
+function navigate(dir) {
+  if (animating) return;
+  const next = current + dir;
+  if (next < 0 || next >= questions.length) return;
+
+  animating = true;
+  const exitClass = dir > 0 ? 'slide-exit-left' : 'slide-exit-right';
+  card.classList.add(exitClass);
+
+  card.addEventListener('animationend', () => {
+    card.classList.remove(exitClass);
+    current = next;
+    renderQuestion(dir);
+  }, { once: true });
+}
+
+function submitForm() {
+  const form = document.getElementById('hidden-form');
+  form.innerHTML = '';
+  answers.forEach((val, i) => {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = (i + 1).toString();
+    input.value = val;
+    form.appendChild(input);
+  });
+  form.submit();
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') navigate(1);
+  else if (e.key === 'ArrowLeft') navigate(-1);
+  else if (['1','2','3','4'].includes(e.key)) {
+    const idx = parseInt(e.key) - 1;
+    const btns = document.querySelectorAll('.option-btn');
+    if (btns[idx]) btns[idx].click();
+  }
+});
+
+// Initial render
+renderQuestion(0);
+</script>
+
+{% endblock %}
