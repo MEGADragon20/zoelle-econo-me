@@ -46,6 +46,8 @@ def create_app():
             answer = "Ausgewogene Herangehensweise"
         result += 5
         result *= 0.1
+        print(result)
+        print(answer)
         return render_template('zollomat_ergebnis.html', answer=answer, result=result)
     return app
 
