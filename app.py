@@ -35,7 +35,7 @@ def create_app():
         A6 = request.form.get("6")
         A7 = request.form.get("7")
         A8 = request.form.get("8")
-        result = sum([int(A1), int(A2), int(A3), int(A4), int(A5), int(A6), int(A7), int(A8)])
+        result = sum([int(A1), int(A2), int(A3), int(A4), int(A5), float(A6), float(A7), float(A8)])
         if result > 1:
             answer = "Marktorientiert"
         
@@ -48,7 +48,7 @@ def create_app():
         else:
             answer = "Ausgewogene Herangehensweise"
         print(result)
-        result = 0.5*(result/((result**2 + 32)**0.5)) + 0.5
+        result = 0.5*(-result/((result**2 + 8)**0.5)) + 0.5
         print(result)
         print(answer)
         return render_template('zollomat_ergebnis.html', answer=answer, result=result)
