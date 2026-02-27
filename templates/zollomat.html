@@ -136,7 +136,7 @@
       Zoll‑O‑Mat
     </h1>
     <p class="text-stone-700 text-sm mt-2 max-w-sm mx-auto">
-      5 Fragen — herausfinden, wo Sie auf dem Spektrum zwischen <em>Protektionismus</em> und <em>Hyperglobalisierung</em> stehen. Antworten Sie ehrlich und erfahren Sie am Ende, welche wirtschaftspolitischen Maßnahmen am besten zu Ihren Präferenzen passen. Viel Spaß beim Ausprobieren!
+      8 Fragen — herausfinden, wo Sie auf dem Spektrum zwischen <em>Protektionismus</em> und <em>Hyperglobalisierung</em> stehen. Antworten Sie ehrlich und erfahren Sie am Ende, welche wirtschaftspolitischen Maßnahmen am besten zu Ihren Präferenzen passen. Viel Spaß beim Ausprobieren!
     </p>
   </div>
 
@@ -236,6 +236,33 @@ const questions = [
       { label: "Dass wir verlernen, wie man Dinge selbst herstellt, und von anderen abhängig sind.",       value: 1 },
     ]
   },
+  {
+    id: 6,
+    text: "Erpressbarkeit durch China: Sollte Deutschland den Handel drastisch reduzieren, um politisch unabhängiger zu sein?",
+    options: [
+      { label: "Nein, wir brauchen die günstigen Vorprodukte und den riesigen Absatzmarkt für unsere Jobs.",       value: -1 },
+      { label: "Ja, wir sollten uns schrittweise lösen, auch wenn Technik-Produkte dadurch deutlich teurer werden.",       value: 0.5 },
+      { label: "Sofortiger Stopp kritischer Importe – Sicherheit und Menschenrechte stehen über dem Profit.",  value: 1 }
+    ]
+  },
+  {
+    id: 7,
+    text: "Medikamenten-Mangel: Würdest du ein Gesetz befürworten, das Pharmafirmen zwingt, in Deutschland zu produzieren?",
+    options: [
+      { label: "Nein, das würde die Krankenkassenbeiträge für uns alle massiv in die Höhe treiben.",       value: -1 },
+      { label: "Nur für absolut lebensnotwendige Mittel (z. B. Antibiotika), der Rest bleibt auf dem Weltmarkt.",       value: 0.5 },
+      { label: "Ja, die Versorgungssicherheit meiner Familie ist mir wichtiger als ein niedriger Preis.",  value: 1 }
+    ]
+  },
+  {
+    id: 8,
+    text: " Schutz der heimischen Industrie: Sollen ausländische E-Autos durch hohe Zölle künstlich teurer gemacht werden, um deutsche Autobauer zu retten?",
+    options: [
+      { label: "Nein, Wettbewerb senkt die Preise und zwingt unsere Firmen, endlich besser zu werden.",       value: -1 },
+      { label: "Nur, wenn nachgewiesen ist, dass die Konkurrenz unfaire Staatshilfen bekommt.",       value: 0.5 },
+      { label: "Ja, wir müssen unsere Industriearbeitsplätze um jeden Preis vor billiger Konkurrenz schützen.",  value: 1 }
+    ]
+  }
 ];
 
 let current = 0;

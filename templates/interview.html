@@ -1,0 +1,342 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+
+<style>
+  body { font-family: 'Source Serif 4', serif; }
+  .display-font { font-family: 'Playfair Display', serif; }
+  .bg-paper { background-color: #faf7f2; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .fade-up { opacity: 0; animation: fadeUp 0.6s ease forwards; }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    border-radius: 2px;
+    padding: 2px 8px;
+  }
+
+  /* Expert tab selector */
+  .expert-tab {
+    transition: all 0.25s ease;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+  }
+  .expert-tab.active-reinhardt {
+    border-color: #b45309;
+    color: #1c1917;
+  }
+  .expert-tab.active-weber {
+    border-color: #0f766e;
+    color: #1c1917;
+  }
+
+  /* Q&A blocks */
+  .qa-block { display: none; }
+  .qa-block.visible { display: block; }
+
+  .qa-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.35s ease;
+    opacity: 0;
+  }
+  .qa-answer.open {
+    max-height: 600px;
+    opacity: 1;
+  }
+
+  /* Question button */
+  .q-btn {
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .q-btn:hover { background: #f5f1ea; }
+
+  .arrow-icon { transition: transform 0.3s ease; }
+  .q-btn.open .arrow-icon { transform: rotate(90deg); }
+
+  /* Avatar initials */
+  .avatar {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+</style>
+
+<div class="bg-paper min-h-screen py-16 px-4">
+
+  <!-- Page header -->
+  <div class="max-w-2xl mx-auto mb-12 fade-up" style="animation-delay:0.05s">
+    <p class="tag bg-stone-800 text-stone-100 mb-4">Expertengespräche</p>
+    <h1 class="display-font text-5xl md:text-6xl font-black text-stone-900 leading-none mb-4">
+      Zwei Stimmen,<br><span class="italic text-amber-700">eine Frage.</span>
+    </h1>
+    <p class="text-stone-500 text-lg leading-relaxed max-w-xl">
+      Wie soll Deutschland mit Zöllen und globaler Abhängigkeit umgehen? Wählen Sie einen Experten und klicken Sie auf eine Frage.
+    </p>
+    <div class="mt-6 h-px bg-gradient-to-r from-amber-700 via-stone-300 to-transparent"></div>
+  </div>
+
+  <!-- Expert switcher -->
+  <div class="max-w-2xl mx-auto mb-8 fade-up" style="animation-delay:0.15s">
+    <div class="flex gap-0 border-b border-stone-200">
+      <button id="tab-reinhardt"
+        class="expert-tab active-reinhardt flex-1 flex items-center gap-3 px-4 py-4 text-left"
+        onclick="switchExpert('reinhardt')">
+        <div class="avatar bg-amber-100 text-amber-800">MR</div>
+        <div>
+          <p class="display-font font-bold text-stone-800 text-base leading-tight">Dr. Markus Reinhardt</p>
+          <p class="text-stone-400 text-xs mt-0.5">Internationale Politik & Sicherheit</p>
+        </div>
+      </button>
+      <button id="tab-weber"
+        class="expert-tab flex-1 flex items-center gap-3 px-4 py-4 text-left text-stone-400"
+        onclick="switchExpert('weber')">
+        <div class="avatar bg-teal-100 text-teal-800">AW</div>
+        <div>
+          <p class="display-font font-bold text-base leading-tight">Anna Weber</p>
+          <p class="text-xs mt-0.5">Doktorantin Außenhandel & int. Wirtschaftsbeziehungen</p>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════ REINHARDT ══════════ -->
+  <div id="expert-reinhardt" class="qa-block visible max-w-2xl mx-auto space-y-3 fade-up" style="animation-delay:0.25s">
+
+    <!-- Q1 -->
+    <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
+      <button class="q-btn px-6 py-5 flex items-start gap-4 rounded-xl" onclick="toggleQ(this)">
+        <span class="display-font text-2xl font-black text-amber-700 select-none mt-0.5 w-7 flex-shrink-0">1</span>
+        <p class="display-font text-base font-bold text-stone-800 leading-snug flex-1">
+          Ökonomische Effizienz oder strategische Naivität?
+        </p>
+        <svg class="arrow-icon w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+      <div class="qa-answer px-6 pb-6 border-t border-stone-100">
+        <div class="bg-amber-50 pl-4 py-3 rounded-r-lg mt-4">
+          <p class="text-stone-800 text-sm leading-relaxed italic">
+            „Es sei durchaus riskant, kritische Infrastrukturen von einem geopolitischen Wettbewerber abhängig zu machen. Effizienz könne nicht allein ausreichendes Kriterium sein, wenn politische Spannungen Lieferketten gefährden könnten. Wirtschaftliche Schwächen könnten außenpolitisch instrumentalisiert werden."
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
+      <button class="q-btn px-6 py-5 flex items-start gap-4 rounded-xl" onclick="toggleQ(this)">
+        <span class="display-font text-2xl font-black text-amber-700 select-none mt-0.5 w-7 flex-shrink-0">2</span>
+        <p class="display-font text-base font-bold text-stone-800 leading-snug flex-1">
+          Sind Kostenbelastungen für Unternehmen ein ausreichendes Gegenargument gegen Zölle?
+        </p>
+        <svg class="arrow-icon w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+      <div class="qa-answer px-6 pb-6 border-t border-stone-100">
+        <div class="bg-amber-50 pl-4 py-3 rounded-r-lg mt-4">
+          <p class="text-stone-800 text-sm leading-relaxed italic">
+            „Kurzfristig würden Zölle tatsächlich Kosten erhöhen. Dennoch müsse man bedenken, dass wirtschaftliche Stabilität auch von politischer Verlässlichkeit abhängt. Wenn Lieferketten unsicher werden, entstehen langfristig womöglich größere Schäden als durch vorübergehend höhere Preise."
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
+      <button class="q-btn px-6 py-5 flex items-start gap-4 rounded-xl" onclick="toggleQ(this)">
+        <span class="display-font text-2xl font-black text-amber-700 select-none mt-0.5 w-7 flex-shrink-0">3</span>
+        <p class="display-font text-base font-bold text-stone-800 leading-snug flex-1">
+          Sollte Deutschland Abhängigkeiten reduzieren, auch wenn es teurer wird?
+        </p>
+        <svg class="arrow-icon w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+      <div class="qa-answer px-6 pb-6 border-t border-stone-100">
+        <div class="bg-amber-50 pl-4 py-3 rounded-r-lg mt-4">
+          <p class="text-stone-800 text-sm leading-relaxed italic">
+            „Eine vollständige Abkopplung sei weder realistisch noch sinnvoll. Eine stärkere Diversifizierung der Handelspartner erscheine jedoch notwendig, um Risiken zu streuen und strategische Handlungsfähigkeit zu sichern."
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
+      <button class="q-btn px-6 py-5 flex items-start gap-4 rounded-xl" onclick="toggleQ(this)">
+        <span class="display-font text-2xl font-black text-amber-700 select-none mt-0.5 w-7 flex-shrink-0">4</span>
+        <p class="display-font text-base font-bold text-stone-800 leading-snug flex-1">
+          Wie sollte Deutschland langfristig mit Zöllen und globaler Abhängigkeit umgehen?
+        </p>
+        <svg class="arrow-icon w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+      <div class="qa-answer px-6 pb-6 border-t border-stone-100">
+        <div class="bg-amber-50 pl-4 py-3 rounded-r-lg mt-4">
+          <p class="text-stone-800 text-sm leading-relaxed italic">
+            „Deutschland solle nicht pauschal auf Abschottung setzen. Dennoch sei es ratsam, sensible Bereiche stärker zu schützen und strategische Risiken zu verringern. Wirtschaftliche Effizienz dürfe nicht über langfristige Stabilität gestellt werden."
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════ WEBER ══════════ -->
+  <div id="expert-weber" class="qa-block max-w-2xl mx-auto space-y-3">
+
+    <!-- Q1 -->
+    <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
+      <button class="q-btn px-6 py-5 flex items-start gap-4 rounded-xl" onclick="toggleQ(this)">
+        <span class="display-font text-2xl font-black text-teal-700 select-none mt-0.5 w-7 flex-shrink-0">1</span>
+        <p class="display-font text-base font-bold text-stone-800 leading-snug flex-1">
+          Wo profitiert Deutschland von eigener Produktion, wo bleibt Handel sinnvoll?
+        </p>
+        <svg class="arrow-icon w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+      <div class="qa-answer px-6 pb-6 border-t border-stone-100">
+        <div class="bg-teal-50 pl-4 py-3 rounded-r-lg mt-4">
+          <p class="text-stone-800 text-sm leading-relaxed italic">
+            „In wichtigen Bereichen wie Technologie oder Schlüsselkomponenten könne Deutschland von eigener Produktion profitieren, um Kosten und Engpässe besser zu kontrollieren. In anderen Bereichen ließe sich festhalten, dass Handel sinnvoll bleiben könnte, weil Unternehmen so günstiger produzieren und wettbewerbsfähig bleiben könnten."
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
+      <button class="q-btn px-6 py-5 flex items-start gap-4 rounded-xl" onclick="toggleQ(this)">
+        <span class="display-font text-2xl font-black text-teal-700 select-none mt-0.5 w-7 flex-shrink-0">2</span>
+        <p class="display-font text-base font-bold text-stone-800 leading-snug flex-1">
+          Wie könnten höhere Zölle oder Importbeschränkungen deutsche Firmen treffen?
+        </p>
+        <svg class="arrow-icon w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+      <div class="qa-answer px-6 pb-6 border-t border-stone-100">
+        <div class="bg-teal-50 pl-4 py-3 rounded-r-lg mt-4">
+          <p class="text-stone-800 text-sm leading-relaxed italic">
+            „Höhere Zölle könnten die Kosten für benötigte Bauteile erhöhen und die Gewinne der Firmen drücken. Dies würde Produkte teurer machen und Firmen dazu bringen, Teile der Produktion ins Ausland zu verlagern, was die Wettbewerbsfähigkeit schwächen könnte."
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
+      <button class="q-btn px-6 py-5 flex items-start gap-4 rounded-xl" onclick="toggleQ(this)">
+        <span class="display-font text-2xl font-black text-teal-700 select-none mt-0.5 w-7 flex-shrink-0">3</span>
+        <p class="display-font text-base font-bold text-stone-800 leading-snug flex-1">
+          Gibt es wirtschaftliche Gründe, bestimmte Branchen gezielt zu schützen?
+        </p>
+        <svg class="arrow-icon w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+      <div class="qa-answer px-6 pb-6 border-t border-stone-100">
+        <div class="bg-teal-50 pl-4 py-3 rounded-r-lg mt-4">
+          <p class="text-stone-800 text-sm leading-relaxed italic">
+            „Schutzmaßnahmen in wichtigen Branchen wie Halbleitern oder Energiespeichern seien sinnvoll, um Engpässe zu verhindern und Standorte zu sichern. Wichtig sei dabei, dass solche Maßnahmen klar begründet und nicht übertrieben teuer würden."
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
+      <button class="q-btn px-6 py-5 flex items-start gap-4 rounded-xl" onclick="toggleQ(this)">
+        <span class="display-font text-2xl font-black text-teal-700 select-none mt-0.5 w-7 flex-shrink-0">4</span>
+        <p class="display-font text-base font-bold text-stone-800 leading-snug flex-1">
+          Wie sollte Deutschland langfristig mit Zöllen und Abhängigkeiten umgehen?
+        </p>
+        <svg class="arrow-icon w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+      <div class="qa-answer px-6 pb-6 border-t border-stone-100">
+        <div class="bg-teal-50 pl-4 py-3 rounded-r-lg mt-4">
+          <p class="text-stone-800 text-sm leading-relaxed italic">
+            „Offener Handel könnte meist wirtschaftlich vorteilhaft bleiben, um Unternehmen konkurrenzfähig zu halten. Eine kluge Streuung der Lieferquellen helfe, Risiken zu verringern. Pauschale Zölle oder zu viel Schutz könnten dagegen teuer werden und die Wettbewerbsfähigkeit schwächen."
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Divider + compare note -->
+  <div class="max-w-2xl mx-auto mt-14 fade-up" style="animation-delay:0.65s">
+    <div class="h-px bg-gradient-to-r from-transparent via-stone-300 to-transparent mb-6"></div>
+    <p class="text-center text-stone-400 text-sm italic">
+      Beide Experten betonen Diversifizierung — sie unterscheiden sich im Gewicht von Sicherheit gegenüber wirtschaftlicher Effizienz.
+    </p>
+  </div>
+
+</div>
+
+<script>
+  function switchExpert(name) {
+    // Hide all blocks
+    document.querySelectorAll('.qa-block').forEach(el => el.classList.remove('visible'));
+    // Deactivate all tabs
+    document.getElementById('tab-reinhardt').classList.remove('active-reinhardt', 'active-weber');
+    document.getElementById('tab-weber').classList.remove('active-reinhardt', 'active-weber');
+    // Reset text color
+    document.getElementById('tab-reinhardt').classList.add('text-stone-400');
+    document.getElementById('tab-weber').classList.add('text-stone-400');
+
+    // Activate chosen
+    document.getElementById('expert-' + name).classList.add('visible');
+    const tab = document.getElementById('tab-' + name);
+    tab.classList.add('active-' + name);
+    tab.classList.remove('text-stone-400');
+
+    // Close all open answers
+    document.querySelectorAll('.qa-answer').forEach(el => el.classList.remove('open'));
+    document.querySelectorAll('.q-btn').forEach(el => el.classList.remove('open'));
+  }
+
+  function toggleQ(btn) {
+    const answer = btn.nextElementSibling;
+    const isOpen = answer.classList.contains('open');
+
+    // Close all in current expert panel
+    const panel = btn.closest('.qa-block');
+    panel.querySelectorAll('.qa-answer').forEach(el => el.classList.remove('open'));
+    panel.querySelectorAll('.q-btn').forEach(el => el.classList.remove('open'));
+
+    if (!isOpen) {
+      answer.classList.add('open');
+      btn.classList.add('open');
+    }
+  }
+
+  // Init: Reinhardt tab color
+  document.getElementById('tab-reinhardt').classList.remove('text-stone-400');
+</script>
+
+{% endblock %}
