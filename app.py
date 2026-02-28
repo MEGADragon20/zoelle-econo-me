@@ -36,15 +36,15 @@ def create_app():
         A7 = request.form.get("7")
         A8 = request.form.get("8")
         result = sum([int(A1), int(A2), int(A3), int(A4), int(A5), float(A6), float(A7), float(A8)])
-        if result > 1:
-            answer = "Marktorientiert"
-        
-        elif result < -1:
+        if result > 2:
             answer = "Moderat Protektionistisch"
-        if result > 3:
-            answer = "Hyperglobalisierung"
-        elif result < -3:
+        
+        elif result < -2:
+            answer = "Marktorientiert"
+        if result > 4:
             answer = "Autarkie"
+        elif result < -4:
+            answer = "Hyperglobalisierung"
         else:
             answer = "Ausgewogene Herangehensweise"
         print(result)
